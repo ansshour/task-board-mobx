@@ -25,22 +25,24 @@ export const AddBoard: React.FC<Props> = (props) => {
 
     const handleOpen = useCallback((e: Event) => {
         const target = e.target as Element;
-        if (boardRef) {
-            if (target.contains(boardRef.current)) {
-                setOpen(false)
-            }
+        if (!boardRef) {
+            return;
+        }
+        if (target.contains(boardRef.current)) {
+            setOpen(false)
         }
     }, [boardRef, setOpen])
 
     useEffect(() => {
-        if (isOpen) {
-            document.addEventListener("click", (e: Event) => {
-                handleOpen(e)
-            })
+        if (!isOpen) {
+            return;
+        }
+        document.addEventListener("click", (e: Event) => {
+            handleOpen(e)
+        })
 
-            return () => {
-                document.removeEventListener("click", handleOpen)
-            }
+        return () => {
+            document.removeEventListener("click", handleOpen)
         }
     }, [handleOpen, isOpen])
 
