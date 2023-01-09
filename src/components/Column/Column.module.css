@@ -1,0 +1,23 @@
+.column {
+    width: 300px;
+    box-shadow: 0px 0px 6px -2px rgba(34, 60, 80, 0.2);
+    background-color: white;
+    padding: 10px;
+    border-radius: 5px;
+    flex-shrink: 0;
+}
+
+.top {
+    padding: 10px 0;
+    border-bottom: 1px solid lightgray;
+}
+
+.addCard {
+    margin: 10px 0;
+}
+
+.cards {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}

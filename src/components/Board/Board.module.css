@@ -1,0 +1,18 @@
+.container {
+    overflow-y: scroll;
+    height: 100vh;
+}
+
+.columns {
+    margin-top: 5px;
+    display: flex;
+    gap: 10px;
+    margin-left: 10px;
+    align-items: flex-start;
+}
+
+.emptyBoards {
+    font-size: 1.5rem;
+    margin-top: 10px;
+    margin-left: 10px;
+}
