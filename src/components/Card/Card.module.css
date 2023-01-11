@@ -1,5 +1,16 @@
 .card {
-    padding: 10px;
+    padding: 20px;
     border: 1px solid lightgray;
     border-radius: 5px;
+    position: relative;
+    cursor: grabbing;
+    transition: 0.3s;
+}
+
+.disabled {
+    cursor: grabbing;
+    position: absolute;
+    z-index: 1000000;
+    width: 100%;
+    height: 100%;
 }

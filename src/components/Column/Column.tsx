@@ -19,10 +19,15 @@ export const Column: React.FC<Props> = (props) => {
     const { id, name, cards } = props;
 
     return (
-        <div className={styles.column}>
+        <div
+            draggable={true}
+            className={styles.column}
+        // onDragEnter={() => console.log(props)}
+        >
             <div className={styles.top}>
                 <Input
-                    value={name}
+                    // value={name}
+                    value={name + String(id)}
                     onChange={e => BoardStore.changeColumnName(e.target.value, id)} />
             </div>
             <div className={styles.addCard}>
@@ -30,8 +35,8 @@ export const Column: React.FC<Props> = (props) => {
                     onClick={() => BoardStore.addCardToColumn(id)}>Добавить карточку</Button>
             </div>
             <div className={styles.cards}>
-                {cards.map((card) => <Card key={card.id} {...card} curColumnId={id} />)}
+                {cards.map((card) => <Card key={card.id} {...card} curColumnId={id} curColumn={props} />)}
             </div>
-        </div>
+        </div >
     )
 }

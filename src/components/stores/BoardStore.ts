@@ -5,6 +5,9 @@ type Card = {
     text: string,
 }
 
+export type CardT = Card;
+export type ColumnT = Column;
+
 type Column = {
     id: number;
     name: string;
@@ -40,7 +43,16 @@ class BoardStore {
     }
 
     getCurrentColumns() {
-        return this.boards.find((curItem: any) => curItem.id === this.activeBoardId)?.columns
+        return this.boards.find((curItem: Board) => curItem.id === this.activeBoardId)?.columns
+    }
+
+    setColumnsBoard(columns: any) {
+        this.boards = this.boards.map((board) => {
+            if (!(board.id === this.activeBoardId)) {
+                return board
+            }
+            return { ...board, columns }
+        })
     }
 
     addColumn() {
