@@ -32,14 +32,6 @@ export const Card: React.FC<Props> = (props) => {
     }
 
     const dragEnterHandler = (card: CardT, column: ColumnT, e: any) => {
-        if (e.target === cardRef.current) {
-            if (underOrUpper() === "upper") {
-                e.target.style.boxShadow = "1px -8px 8px 0px rgba(34, 60, 80, 0.2)"
-            } else {
-                e.target.style.boxShadow = "1px 8px 8px 0px rgba(34, 60, 80, 0.2)"
-            }
-
-        }
         setDragEnterElement(e.target.offsetHeight)
         setYPosElement(e.pageY - e.target.offsetTop)
         setDragToElement(card)
@@ -56,6 +48,18 @@ export const Card: React.FC<Props> = (props) => {
         dragEndHandler(underOrUpper())
     }
 
+    const onDragOverHandler = (e: any) => {
+        e.preventDefault()
+        if (e.target === cardRef.current) {
+            if (underOrUpper() === "upper") {
+                e.target.style.boxShadow = "1px -8px 8px 0px rgba(34, 60, 80, 0.2)"
+            } else {
+                e.target.style.boxShadow = "1px 8px 8px 0px rgba(34, 60, 80, 0.2)"
+            }
+
+        }
+    }
+
     return (
         <div
             ref={cardRef}
@@ -65,7 +69,7 @@ export const Card: React.FC<Props> = (props) => {
             onDragStart={(e) => dragStartHandler(card, curColumn, e)}
             onDragEnter={(e: any) => dragEnterHandler(card, curColumn, e)}
             onDragEnd={(e: any) => onDragEndHandler(e)}
-            onDragOver={(e) => e.preventDefault()}
+            onDragOver={(e) => onDragOverHandler(e)}
             onDragLeave={(e: any) => { onDragLeaveHandler(e) }}
             onDrop={e => e.preventDefault()}
         >
