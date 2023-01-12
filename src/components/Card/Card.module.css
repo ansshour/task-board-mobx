@@ -5,6 +5,8 @@
     position: relative;
     cursor: grabbing;
     transition: 0.3s;
+    animation-name: animation;
+    animation-duration: 0.5s;
 }
 
 .disabled {
@@ -13,4 +15,15 @@
     z-index: 1000000;
     width: 100%;
     height: 100%;
+}
+
+
+@keyframes animation {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
 }

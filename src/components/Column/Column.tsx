@@ -1,5 +1,6 @@
 import { Button, Input } from "antd"
 import { Card } from "../Card/Card";
+import { useDragAndDrop } from "../providers/DragAndDropProvider";
 import BoardStore from "../stores/BoardStore";
 import styles from "./Column.module.css"
 
@@ -18,11 +19,13 @@ export const Column: React.FC<Props> = (props) => {
 
     const { id, name, cards } = props;
 
+    const { setNextColumn } = useDragAndDrop()
     return (
         <div
-            draggable={true}
             className={styles.column}
-        // onDragEnter={() => console.log(props)}
+            onDragEnter={() => setNextColumn(props)}
+            onDragOver={(e) => e.preventDefault()}
+            onDrop={e => e.preventDefault()}
         >
             <div className={styles.top}>
                 <Input

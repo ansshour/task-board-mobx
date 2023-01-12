@@ -1,0 +1,1 @@
+export const isEqualsObj = <T, R>(obj1: T, obj2: R): boolean => JSON.stringify(obj1) === JSON.stringify(obj2)

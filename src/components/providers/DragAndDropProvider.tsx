@@ -2,6 +2,7 @@ import BoardStore, { CardT, ColumnT } from "../stores/BoardStore";
 import { createContext, useContext, useState, useEffect } from "react"
 import { deepClone } from "../utils/deepClone";
 import { toJS } from "mobx";
+import { isEqualsObj } from "../utils/isEquilsObj";
 
 type Props = {
     children: React.ReactNode;
@@ -18,57 +19,52 @@ export const DragAndDropProvider: React.FC<Props> = ({ children }) => {
     const [prevColumn, setPrevColumn] = useState<null | ColumnT>(null) // колонка в которой изначально лежал элемент
     const [nextColumn, setNextColumn] = useState<null | ColumnT>(null) // колонка в которую мы кладем элемент
 
-    const dragEndHandler = () => {
-        if (!draggableElement) { // функция не отработает, если нет этого, но оно агрится
-            return;
+    type DestructoreType = {
+        draggableElementL: CardT;
+        dragToElementL: CardT;
+        nextColumnL: ColumnT;
+        prevColumnL: ColumnT;
+        allColumns: ColumnT[]
+    }
+
+    const dragEndHandler = (pos: "under" | "upper") => {
+
+        const draggableElementL: CardT = deepClone(draggableElement)
+        const dragToElementL: CardT = deepClone(dragToElement)
+        let prevColumnL: ColumnT = deepClone(prevColumn)
+        let nextColumnL: ColumnT = deepClone(nextColumn)
+        let allColumns: ColumnT[] = deepClone(BoardStore.getCurrentColumns())
+
+        if (isEqualsObj(prevColumnL, nextColumnL) && isEqualsObj(draggableElementL, dragToElementL)) {
+            nextColumnL = prevColumnL;
         }
 
-        let localCurrentColumns = BoardStore.getCurrentColumns()
-        let localPrevColumn: ColumnT | null | any = prevColumn;
-        let localNextColumn: ColumnT | null | any = nextColumn;
-        const localDraggableElement = draggableElement;
-        const localDragToElement = dragToElement;
+        prevColumnL = { ...prevColumnL, cards: prevColumnL!.cards.filter((card) => card.id !== draggableElement!.id) }
+        const indexDragTo: number = nextColumnL!.cards.findIndex((card) => card.id === dragToElementL.id)
 
-        const indexDraggableElementInPrevColumn: number = (() => { // индекс перетаскиваемого элемента в изначальной колонке
-            return localPrevColumn!.cards.findIndex((card: CardT) => card.id === localDraggableElement.id)
-        })()
-        let nextColumnIndexNextElement: number | undefined = (() => { // кидаем элемент в nextColumn перед 2 индексом
-            if (localDragToElement) {
-                return localNextColumn?.cards.findIndex((card: CardT) => card.id === localDragToElement.id)
+        if (isEqualsObj(prevColumnL, nextColumnL) && !isEqualsObj(draggableElementL, dragToElementL)) {
+            nextColumnL.cards.push(draggableElementL)
+        }
+
+        if (pos === "upper") {
+            nextColumnL.cards.splice(indexDragTo, 0, draggableElementL)
+        }
+
+        if (pos === "under") {
+            nextColumnL.cards.splice(indexDragTo + 1, 0, draggableElementL)
+        }
+
+        allColumns = allColumns.map((column) => {
+            if (column.id === prevColumnL.id) {
+                return prevColumnL
             }
-        })()
-        let prevColumnIndexNextElement: number | undefined = (() => {
-            if (localDragToElement) {
-                return localPrevColumn?.cards.findIndex((card: CardT) => card.id === localDragToElement.id)
+            if (column.id === nextColumnL.id) {
+                return nextColumnL
             }
-        })()
+            return column
+        })
 
-        if (nextColumnIndexNextElement) {
-            localNextColumn?.cards.splice(nextColumnIndexNextElement, 0, localDraggableElement)
-            localPrevColumn = { ...localPrevColumn, cards: localPrevColumn?.cards.filter((card: CardT) => card.id !== localDraggableElement.id) }
-            BoardStore.setColumnsBoard(localCurrentColumns?.map((column: ColumnT) => {
-                if (column.id === localPrevColumn!.id) {
-                    return localPrevColumn
-                }
-                if (column.id === localNextColumn!.id) {
-                    return localNextColumn
-                }
-                return column
-            }))
-            return;
-        }
-
-        if (prevColumnIndexNextElement) {
-            localNextColumn?.cards.splice(prevColumnIndexNextElement, 0, draggableElement)
-            localPrevColumn = { ...localNextColumn, cards: localNextColumn?.cards.filter((card: CardT) => card.id !== localDraggableElement.id) }
-            BoardStore.setColumnsBoard(localCurrentColumns?.map((column: ColumnT) => {
-                if (column.id === localNextColumn!.id) {
-                    return localNextColumn
-                }
-                return column
-            }))
-        }
-
+        BoardStore.setColumnsBoard(allColumns)
     }
 
     const dragContextValues = {
