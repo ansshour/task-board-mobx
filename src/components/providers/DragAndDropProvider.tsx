@@ -1,7 +1,6 @@
 import BoardStore, { CardT, ColumnT } from "../stores/BoardStore";
-import { createContext, useContext, useState, useEffect } from "react"
+import { createContext, useContext, useState } from "react"
 import { deepClone } from "../utils/deepClone";
-import { toJS } from "mobx";
 import { isEqualsObj } from "../utils/isEquilsObj";
 
 type Props = {
@@ -35,23 +34,24 @@ export const DragAndDropProvider: React.FC<Props> = ({ children }) => {
         let nextColumnL: ColumnT = deepClone(nextColumn)
         let allColumns: ColumnT[] = deepClone(BoardStore.getCurrentColumns())
 
-        if (isEqualsObj(prevColumnL, nextColumnL) && isEqualsObj(draggableElementL, dragToElementL)) {
+        if (isEqualsObj(prevColumnL, nextColumnL)) {
             nextColumnL = prevColumnL;
         }
 
-        prevColumnL = { ...prevColumnL, cards: prevColumnL!.cards.filter((card) => card.id !== draggableElement!.id) }
         const indexDragTo: number = nextColumnL!.cards.findIndex((card) => card.id === dragToElementL.id)
+        const draggableIndex: number = prevColumnL!.cards.findIndex((card) => card.id === draggableElementL.id)
+        prevColumnL.cards.splice(draggableIndex, 1)
 
-        if (isEqualsObj(prevColumnL, nextColumnL) && !isEqualsObj(draggableElementL, dragToElementL)) {
+        if (!isEqualsObj(prevColumnL, nextColumnL) && !nextColumnL.cards.length) {
             nextColumnL.cards.push(draggableElementL)
-        }
+        } else {
+            if (pos === "upper") {
+                nextColumnL.cards.splice(indexDragTo, 0, draggableElementL)
+            }
 
-        if (pos === "upper") {
-            nextColumnL.cards.splice(indexDragTo, 0, draggableElementL)
-        }
-
-        if (pos === "under") {
-            nextColumnL.cards.splice(indexDragTo + 1, 0, draggableElementL)
+            if (pos === "under") {
+                nextColumnL.cards.splice(indexDragTo + 1, 0, draggableElementL)
+            }
         }
 
         allColumns = allColumns.map((column) => {
@@ -78,11 +78,6 @@ export const DragAndDropProvider: React.FC<Props> = ({ children }) => {
         setNextColumn,
         dragEndHandler
     }
-
-    useEffect(() => {
-        console.log("Перемещаем элемент: ", draggableElement, "\n", "Который был в колонке:", prevColumn)
-        console.log("К элементу: ", dragToElement, "\n", "Который в колонке: ", nextColumn)
-    }, [draggableElement, dragToElement, prevColumn, nextColumn])
 
     return (
         <DragAndDropContext.Provider value={dragContextValues}>

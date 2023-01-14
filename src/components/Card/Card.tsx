@@ -32,8 +32,6 @@ export const Card: React.FC<Props> = (props) => {
     }
 
     const dragEnterHandler = (card: CardT, column: ColumnT, e: any) => {
-        setDragEnterElement(e.target.offsetHeight)
-        setYPosElement(e.pageY - e.target.offsetTop)
         setDragToElement(card)
         // setNextColumn(column)
     }
@@ -50,13 +48,14 @@ export const Card: React.FC<Props> = (props) => {
 
     const onDragOverHandler = (e: any) => {
         e.preventDefault()
+        setDragEnterElement(e.target.offsetHeight)
+        setYPosElement(e.pageY - e.target.offsetTop)
         if (e.target === cardRef.current) {
             if (underOrUpper() === "upper") {
                 e.target.style.boxShadow = "1px -8px 8px 0px rgba(34, 60, 80, 0.2)"
             } else {
                 e.target.style.boxShadow = "1px 8px 8px 0px rgba(34, 60, 80, 0.2)"
             }
-
         }
     }
 
