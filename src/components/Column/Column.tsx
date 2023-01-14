@@ -30,7 +30,7 @@ export const Column: React.FC<Props> = (props) => {
             <div className={styles.top}>
                 <Input
                     // value={name}
-                    value={name + String(id)}
+                    value={name}
                     onChange={e => BoardStore.changeColumnName(e.target.value, id)} />
             </div>
             <div className={styles.addCard}>

@@ -1,12 +1,31 @@
 .card {
-    padding: 20px;
+    padding: 10px;
     border: 1px solid lightgray;
     border-radius: 5px;
     position: relative;
     cursor: grabbing;
     transition: 0.3s;
-    animation-name: animation;
-    animation-duration: 0.5s;
+    padding-right: 30px;
+    position: relative;
+}
+
+.cardText {
+    word-wrap: break-word;
+}
+
+.edit {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    right: 5px;
+    padding: 5px;
+    transition: 0.2s;
+    cursor: pointer;
+    border-radius: 3px;
+}
+
+.edit:hover {
+    background-color: rgb(232, 232, 232);
 }
 
 .disabled {
@@ -17,13 +36,11 @@
     height: 100%;
 }
 
+.editCard {
+    font-size: 1.5rem;
+    margin-bottom: 10px;
+}
 
-@keyframes animation {
-    from {
-        opacity: 0;
-    }
-
-    to {
-        opacity: 1;
-    }
+.emptyCard {
+    color: lightgray;
 }

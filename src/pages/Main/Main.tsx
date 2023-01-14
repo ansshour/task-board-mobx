@@ -1,3 +1,4 @@
+import { Modal } from "antd"
 import { Board } from "../../components/Board/Board"
 import { BoardsList } from "../../components/BoardsList/BoardsList"
 import styles from "./Main.module.css"

@@ -3,6 +3,9 @@ import { useDragAndDrop } from "../providers/DragAndDropProvider";
 import BoardStore, { CardT, ColumnT } from "../stores/BoardStore";
 import styles from "./Card.module.css"
 import { useRef, useEffect, useState } from "react"
+import { Modal } from "../Modal/Modal";
+import { Button } from "antd";
+import { EditOutlined } from "@ant-design/icons";
 
 type Props = {
     id: number;
@@ -13,15 +16,16 @@ type Props = {
 
 export const Card: React.FC<Props> = (props) => {
 
+    const { id, text, curColumnId, curColumn } = props;
+    const card: CardT = { id, text }
+
     const { setDraggapleElement, setDragToElement, setPrevColumn, setNextColumn, dragEndHandler } = useDragAndDrop()
     const [yPosInElement, setYPosElement] = useState(0);
     const [dragEnterElement, setDragEnterElement] = useState(0)
-
+    const [editModalOpen, setEditModalOpen] = useState(false)
+    const [cardText, setCardText] = useState(text)
 
     const cardRef = useRef<any>()
-
-    const { id, text, curColumnId, curColumn } = props;
-    const card: CardT = { id, text }
 
     const underOrUpper = (): "upper" | "under" => yPosInElement > (dragEnterElement / 2) ? "under" : "upper"
 
@@ -59,25 +63,46 @@ export const Card: React.FC<Props> = (props) => {
         }
     }
 
+    const saveChangeText = () => {
+        setEditModalOpen(false)
+        BoardStore.setCard(id, curColumnId, cardText)
+    }
+
     return (
-        <div
-            ref={cardRef}
-            id="card"
-            className={styles.card}
-            draggable={true}
-            onDragStart={(e) => dragStartHandler(card, curColumn, e)}
-            onDragEnter={(e: any) => dragEnterHandler(card, curColumn, e)}
-            onDragEnd={(e: any) => onDragEndHandler(e)}
-            onDragOver={(e) => onDragOverHandler(e)}
-            onDragLeave={(e: any) => { onDragLeaveHandler(e) }}
-            onDrop={e => e.preventDefault()}
-        >
-            {/* <div className={styles.disabled}></div> */}
-            {/* <TextArea
-                autoSize={true}
-                value={id}
-                onChange={e => BoardStore.setCard(id, curColumnId, e.target.value)} /> */}
-            {id}
-        </div >
+        <>
+            <div
+                ref={cardRef}
+                id="card"
+                className={styles.card}
+                draggable={true}
+                onDragStart={(e) => dragStartHandler(card, curColumn, e)}
+                onDragEnter={(e: any) => dragEnterHandler(card, curColumn, e)}
+                onDragEnd={(e: any) => onDragEndHandler(e)}
+                onDragOver={(e) => onDragOverHandler(e)}
+                onDragLeave={(e: any) => { onDragLeaveHandler(e) }}
+                onDrop={e => e.preventDefault()}
+            >
+                <p className={styles.cardText}>{text.length ? text : <span className={styles.emptyCard}>Пустая карточка...</span>}</p>
+                <div
+                    className={styles.edit}
+                    onClick={() => setEditModalOpen(true)}>
+                    <EditOutlined />
+                </div>
+            </div >
+            <Modal
+                open={editModalOpen}
+                setOpen={setEditModalOpen}>
+                <p className={styles.editCard}>Редактирование карточки</p>
+                <TextArea
+                    autoSize={true}
+                    value={cardText}
+                    onChange={e => setCardText(e.target.value)} />
+                <Button style={{ marginTop: "10px" }}
+                    onClick={saveChangeText}>Сохранить изменения</Button>
+                <Button
+                    style={{ marginTop: "10px", marginLeft: "5px" }}
+                    onClick={() => setEditModalOpen(false)}>Закрыть</Button>
+            </Modal>
+        </>
     )
 }
