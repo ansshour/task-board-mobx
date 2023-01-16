@@ -24,9 +24,12 @@ type Board = {
 class BoardStore {
     constructor() {
         makeAutoObservable(this)
+        autorun(() => {
+            localStorage.setItem("boards", JSON.stringify(this.boards))
+        })
     }
 
-    boards: Board[] = []
+    boards: Board[] = localStorage.getItem("boards") ? JSON.parse(localStorage.getItem("boards")!) : []
 
     addBoard(name: string) {
         const id = Math.random()
@@ -127,13 +130,18 @@ class BoardStore {
             if (!(board.id === this.activeBoardId)) {
                 return board
             }
-            const newColumns = board.columns.map((column) => {
-                if (!(column.id === columnId)) {
-                    return column
-                }
-                return { ...column, cards: column.cards.filter((card) => card.id !== id) }
-            })
-            return { ...board, columns: newColumns }
+            return {
+                ...board,
+                columns: board.columns.map((column) => {
+                    if (!(column.id === columnId)) {
+                        return column
+                    }
+                    return {
+                        ...column,
+                        cards: column.cards.filter((card) => card.id !== id)
+                    }
+                })
+            }
         })
     }
 

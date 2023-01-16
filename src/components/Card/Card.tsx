@@ -29,36 +29,47 @@ export const Card: React.FC<Props> = (props) => {
 
     const underOrUpper = (): "upper" | "under" => yPosInElement > (dragEnterElement / 2) ? "under" : "upper"
 
-    const dragStartHandler = (card: CardT, column: ColumnT, e: any) => {
-        queueMicrotask(() => e.target.style.opacity = "0")
+    const dragStartHandler = (e: React.DragEvent<HTMLDivElement>) => {
+        queueMicrotask(() => {
+            if (e.target instanceof HTMLElement) {
+                e.target.style.opacity = "0"
+            }
+        })
         setDraggapleElement(card);
-        setPrevColumn(column)
+        setPrevColumn(curColumn)
     }
 
-    const dragEnterHandler = (card: CardT, column: ColumnT, e: any) => {
+    const dragEnterHandler = (e: React.DragEvent<HTMLDivElement>) => {
         setDragToElement(card)
-        // setNextColumn(column)
     }
 
-    const onDragLeaveHandler = (e: any) => {
-        e.target.style.boxShadow = "none"
+    const onDragLeaveHandler = (e: React.DragEvent<HTMLDivElement>) => {
+        if (e.target instanceof HTMLElement) {
+            e.target.style.boxShadow = "none"
+        }
     }
 
-    const onDragEndHandler = (e: any) => {
-        queueMicrotask(() => e.target.style.opacity = "1")
+    const onDragEndHandler = (e: React.DragEvent<HTMLDivElement>) => {
+        queueMicrotask(() => {
+            if (e.target instanceof HTMLElement) {
+                e.target.style.opacity = "1"
+            }
+        })
         document.querySelectorAll("#card").forEach((card: any) => card.style.boxShadow = "none")
         dragEndHandler(underOrUpper())
     }
 
-    const onDragOverHandler = (e: any) => {
+    const onDragOverHandler = (e: React.DragEvent<HTMLDivElement>) => {
         e.preventDefault()
-        setDragEnterElement(e.target.offsetHeight)
-        setYPosElement(e.pageY - e.target.offsetTop)
-        if (e.target === cardRef.current) {
-            if (underOrUpper() === "upper") {
-                e.target.style.boxShadow = "1px -8px 8px 0px rgba(34, 60, 80, 0.2)"
-            } else {
-                e.target.style.boxShadow = "1px 8px 8px 0px rgba(34, 60, 80, 0.2)"
+        if (e.target instanceof HTMLElement) {
+            setDragEnterElement(e.target.offsetHeight)
+            setYPosElement(e.pageY - e.target.offsetTop)
+            if (e.target === cardRef.current) {
+                if (underOrUpper() === "upper") {
+                    e.target.style.boxShadow = "1px -8px 8px 0px rgba(34, 60, 80, 0.2)"
+                } else {
+                    e.target.style.boxShadow = "1px 8px 8px 0px rgba(34, 60, 80, 0.2)"
+                }
             }
         }
     }
@@ -72,6 +83,7 @@ export const Card: React.FC<Props> = (props) => {
         setCardText(text)
     }, [editModalOpen])
 
+
     return (
         <>
             <div
@@ -79,11 +91,11 @@ export const Card: React.FC<Props> = (props) => {
                 id="card"
                 className={styles.card}
                 draggable={true}
-                onDragStart={(e) => dragStartHandler(card, curColumn, e)}
-                onDragEnter={(e: any) => dragEnterHandler(card, curColumn, e)}
-                onDragEnd={(e: any) => onDragEndHandler(e)}
-                onDragOver={(e) => onDragOverHandler(e)}
-                onDragLeave={(e: any) => { onDragLeaveHandler(e) }}
+                onDragStart={dragStartHandler}
+                onDragEnter={dragEnterHandler}
+                onDragEnd={onDragEndHandler}
+                onDragOver={onDragOverHandler}
+                onDragLeave={onDragLeaveHandler}
                 onDrop={e => e.preventDefault()}
             >
                 <p className={styles.cardText}>{text.length ? text : <span className={styles.emptyCard}>Пустая карточка...</span>}</p>
