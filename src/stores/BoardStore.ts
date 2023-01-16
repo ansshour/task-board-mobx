@@ -122,6 +122,21 @@ class BoardStore {
         })
     }
 
+    deleteCard(id: number, columnId: number) {
+        this.boards = this.boards.map((board) => {
+            if (!(board.id === this.activeBoardId)) {
+                return board
+            }
+            const newColumns = board.columns.map((column) => {
+                if (!(column.id === columnId)) {
+                    return column
+                }
+                return { ...column, cards: column.cards.filter((card) => card.id !== id) }
+            })
+            return { ...board, columns: newColumns }
+        })
+    }
+
 }
 
 export default new BoardStore()

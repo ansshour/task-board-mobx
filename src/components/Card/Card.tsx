@@ -1,11 +1,11 @@
 import TextArea from "antd/es/input/TextArea"
-import { useDragAndDrop } from "../providers/DragAndDropProvider";
-import BoardStore, { CardT, ColumnT } from "../stores/BoardStore";
+import { useDragAndDrop } from "../../providers/DragAndDropProvider";
+import BoardStore, { CardT, ColumnT } from "../../stores/BoardStore";
 import styles from "./Card.module.css"
 import { useRef, useEffect, useState } from "react"
 import { Modal } from "../Modal/Modal";
 import { Button } from "antd";
-import { EditOutlined } from "@ant-design/icons";
+import { EditOutlined, DeleteOutlined } from "@ant-design/icons";
 
 type Props = {
     id: number;
@@ -68,6 +68,10 @@ export const Card: React.FC<Props> = (props) => {
         BoardStore.setCard(id, curColumnId, cardText)
     }
 
+    useEffect(() => {
+        setCardText(text)
+    }, [editModalOpen])
+
     return (
         <>
             <div
@@ -87,6 +91,11 @@ export const Card: React.FC<Props> = (props) => {
                     className={styles.edit}
                     onClick={() => setEditModalOpen(true)}>
                     <EditOutlined />
+                </div>
+                <div
+                    className={styles.delete}
+                    onClick={() => BoardStore.deleteCard(id, curColumnId)}>
+                    <DeleteOutlined />
                 </div>
             </div >
             <Modal

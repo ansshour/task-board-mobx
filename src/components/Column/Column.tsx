@@ -1,7 +1,7 @@
 import { Button, Input } from "antd"
 import { Card } from "../Card/Card";
-import { useDragAndDrop } from "../providers/DragAndDropProvider";
-import BoardStore from "../stores/BoardStore";
+import { useDragAndDrop } from "../../providers/DragAndDropProvider";
+import BoardStore from "../../stores/BoardStore";
 import styles from "./Column.module.css"
 
 type Card = {

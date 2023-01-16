@@ -5,7 +5,7 @@
     position: relative;
     cursor: grabbing;
     transition: 0.3s;
-    padding-right: 30px;
+    padding-right: 60px;
     position: relative;
 }
 
@@ -17,7 +17,7 @@
     position: absolute;
     top: 50%;
     transform: translateY(-50%);
-    right: 5px;
+    right: 30px;
     padding: 5px;
     transition: 0.2s;
     cursor: pointer;
@@ -43,4 +43,19 @@
 
 .emptyCard {
     color: lightgray;
+}
+
+.delete {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    right: 5px;
+    padding: 5px;
+    transition: 0.2s;
+    cursor: pointer;
+    border-radius: 3px;
+}
+
+.delete:hover {
+    background-color: rgb(232, 232, 232);
 }

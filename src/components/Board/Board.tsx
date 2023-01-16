@@ -1,10 +1,10 @@
 import styles from "./Board.module.css"
 import { observer } from "mobx-react-lite"
 import { Column } from "../Column/Column"
-import BoardStore from "../stores/BoardStore"
+import BoardStore from "../../stores/BoardStore"
 import { toJS } from "mobx"
 import { Button } from "antd"
-import { DragAndDropProvider } from "../providers/DragAndDropProvider"
+import { DragAndDropProvider } from "../../providers/DragAndDropProvider"
 
 
 export const Board: React.FC = observer(() => {

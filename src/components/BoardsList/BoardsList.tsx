@@ -1,7 +1,7 @@
 import { PlusOutlined } from "@ant-design/icons";
 import { observer } from "mobx-react-lite";
 import { useRef, useState } from "react";
-import BoardStore from "../stores/BoardStore";
+import BoardStore from "../../stores/BoardStore";
 import styles from "./BoardsList.module.css"
 import cn from "classnames"
 import { AddBoard } from "../AddBoard/AddBoard";
